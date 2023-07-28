@@ -13,15 +13,15 @@ import uvicorn
 from firebase_admin import auth, credentials
 import firebase_admin
 
-from .utils.write_memories import WriterGPT
-from .utils.authenticate import get_current_user
+from utils.write_memories import WriterGPT
+from utils.authenticate import get_current_user
 
 # for environment_val
 dotenv_path = join(dirname(__file__), "./ENV/.env")
 load_dotenv(dotenv_path)
 
 # for authentication
-footprint_with_FBA="./app/ENV/footprint_FBA.json"
+footprint_with_FBA="./ENV/footprint_FBA.json"
 cred = credentials.Certificate(footprint_with_FBA)
 firebase_admin.initialize_app(cred)
 

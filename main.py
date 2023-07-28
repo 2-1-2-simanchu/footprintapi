@@ -1,3 +1,7 @@
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi import Depends, HTTPException, status, Response
@@ -5,6 +9,12 @@ from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
+
+from .utils.write_memories import WriterGPT
+
+dotenv_path = join(dirname(__file__), "./ENV/.env")
+load_dotenv(dotenv_path)
+
 
 app = FastAPI()
 

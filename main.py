@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
+from typing import Optional, List, Dict
 
 from firebase_admin import auth, credentials
 import firebase_admin
@@ -25,6 +26,7 @@ footprint_with_FBA="./ENV/footprint_FBA.json"
 cred = credentials.Certificate(footprint_with_FBA)
 firebase_admin.initialize_app(cred)
 
+writer = WriterGPT()
 app = FastAPI()
 
 app.add_middleware(
@@ -35,13 +37,29 @@ app.add_middleware(
     allow_headers=["*"]       
 )
 
-class HealthModel(BaseModel):
+# request models
+class DiaryModel(BaseModel):
+    diary: str
+
+#class WhoIsMeModel(BaseModel):
+
+# response
+class MessageModel(BaseModel):
     message: str
 
-@app.get("/health", response_model=HealthModel)
+class FacilitiesModel(BaseModel):
+    facilities: List[str] = []
+
+@app.get("/health", response_model=MessageModel)
 async def health():
-    return HealthModel(message=f"Welcome to footprint &#x1f43e;")
+    return MessageModel(message=f"Welcome to footprint &#x1f43e;")
 
 @app.get("/who_is_me")
 async def who_is_me(current_user=Depends(get_current_user)):
     return {"msg": "Hello", "uid": current_user}
+
+@app.post("/write_diary", response_model=MessageModel)
+async def write_diary(current_user=Depends(get_current_user)):
+    writer.think4memories()
+    diary_seq = writer.write_memories()
+    return DiaryModel(diary=f"{diary_seq}")

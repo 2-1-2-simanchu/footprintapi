@@ -41,7 +41,8 @@ app.add_middleware(
 class DiaryModel(BaseModel):
     diary: str
 
-#class WhoIsMeModel(BaseModel):
+class WhoIsMeModel(BaseModel):
+    uid: str
 
 # response
 class MessageModel(BaseModel):
@@ -56,10 +57,10 @@ async def health():
 
 @app.get("/who_is_me")
 async def who_is_me(current_user=Depends(get_current_user)):
-    return {"msg": "Hello", "uid": current_user}
+    #return {"msg": "Hello", "uid": current_user}
+    return WhoIsMeModel(uid=f"{current_user}")
 
-@app.post("/write_diary", response_model=MessageModel)
+@app.post("/write_diary", response_model=DiaryModel)
 async def write_diary(current_user=Depends(get_current_user)):
-    writer.think4memories()
     diary_seq = writer.write_memories()
     return DiaryModel(diary=f"{diary_seq}")

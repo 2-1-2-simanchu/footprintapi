@@ -24,6 +24,12 @@ class WriterGPT:
         self.OPENAI_APIKEY = os.environ.get("OPENAI_APIKEY")
         openai.api_key = self.OPENAI_APIKEY
     
+    def facilities2str(self, req_dict):
+        s = ""
+        for i in req_dict["facilities"]:
+            s += f"- {i}\n"
+        return s
+
     def write_memories(self, facilities_json):
         self.prompt = f"""
         以下の条件に基づいて、お出かけの日記を書いてください\n
@@ -33,7 +39,7 @@ class WriterGPT:
         {self.prompt_limit_word_num}
         {self.content_only_flag}
 
-        # お出かけで行った場所
+        # お出かけで行った場所\n
         {facilities_json}
         """
         writer = openai.ChatCompletion.create(

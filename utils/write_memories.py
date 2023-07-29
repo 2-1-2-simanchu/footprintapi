@@ -23,8 +23,8 @@ class WriterGPT:
 
         self.OPENAI_APIKEY = os.environ.get("OPENAI_APIKEY")
         openai.api_key = self.OPENAI_APIKEY
-
-    def think4memories(self, facilities_json):
+    
+    def write_memories(self, facilities_json):
         self.prompt = f"""
         以下の条件に基づいて、お出かけの日記を書いてください\n
 
@@ -36,8 +36,6 @@ class WriterGPT:
         # お出かけで行った場所
         {facilities_json}
         """
-    
-    def write_memories(self):
         writer = openai.ChatCompletion.create(
                     model=self.writer_model,
                     prompt=self.prompt,

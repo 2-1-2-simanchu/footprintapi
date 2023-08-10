@@ -1,4 +1,5 @@
 ### User Custom ###
+test_*.py
 footprint_FB*
 .footprint_FB*
 setting4footprint.toml

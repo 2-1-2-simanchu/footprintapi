@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi import Depends, HTTPException, status, Response
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
@@ -42,6 +42,7 @@ class DiaryModel(BaseModel):
     diary: str
 
 class WhoIsMeModel(BaseModel):
+    msg: str
     uid: str
 
 # response
@@ -49,18 +50,25 @@ class MessageModel(BaseModel):
     message: str
 
 class FacilitiesModel(BaseModel):
-    facilities: List[str] = []
+    facilities: List[str]
+
 
 @app.get("/health", response_model=MessageModel)
 async def health():
     return MessageModel(message=f"Welcome to footprint &#x1f43e;")
 
-@app.get("/who_is_me")
+@app.get("/who_is_me", response_model=WhoIsMeModel)
 async def who_is_me(current_user=Depends(get_current_user)):
     #return {"msg": "Hello", "uid": current_user}
-    return WhoIsMeModel(uid=f"{current_user}")
+    return WhoIsMeModel(msg="OK", uid=f"{current_user}")
+
+@app.get("/contact_chatgpt")
+#async def chatgpt(question: MessageModel):
+async def contact_chatgpt():
+    answer_dict = writer.contact_chatgpt("Hello")
+    return JSONResponse(content=answer_dict)
 
 @app.post("/write_diary", response_model=DiaryModel)
-async def write_diary(current_user=Depends(get_current_user)):
-    diary_seq = writer.write_memories()
+async def write_diary(input_seq=Depends(FacilitiesModel)):
+    diary_seq = writer.write_memories(input_seq)
     return DiaryModel(diary=f"{diary_seq}")

@@ -30,7 +30,24 @@ class WriterGPT:
             s += f"- {i}\n"
         return s
 
+    def facilitieslist2str(self, req_list):
+        s = ""
+        for i in req_list:
+            s += f"- {i}\n"
+        return s
+
+    def contact_chatgpt(self, question:str):
+        res = openai.ChatCompletion.create(
+                model=self.writer_model,
+                messages=[
+                    {"role": "user", "content": question},
+                ],
+            )
+        return {"answer": res.choices[0]["message"]["content"].strip()}
+        
+
     def write_memories(self, facilities_json):
+        facilities_str = self.facilities2str(facilities_json)
         self.prompt = f"""
         以下の条件に基づいて、お出かけの日記を書いてください\n
 
@@ -40,7 +57,7 @@ class WriterGPT:
         {self.content_only_flag}
 
         # お出かけで行った場所\n
-        {facilities_json}
+        {facilities_str}
         """
         writer = openai.ChatCompletion.create(
                     model=self.writer_model,

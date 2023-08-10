@@ -4,6 +4,7 @@ footprint_FB*
 .footprint_FB*
 setting4footprint.toml
 memo.md
+memo*.md
 # tmp
 tmp/
 

@@ -46,8 +46,8 @@ class WriterGPT:
         return {"answer": res.choices[0]["message"]["content"].strip()}
         
 
-    def write_memories(self, facilities_json):
-        facilities_str = self.facilities2str(facilities_json)
+    def write_memories(self, facilities_list):
+        facilities_str = self.facilitieslist2str(facilities_list)
         self.prompt = f"""
         以下の条件に基づいて、お出かけの日記を書いてください\n
 
@@ -58,10 +58,13 @@ class WriterGPT:
 
         # お出かけで行った場所\n
         {facilities_str}
-        """
+        """.replace(" ", "")
         writer = openai.ChatCompletion.create(
                     model=self.writer_model,
-                    prompt=self.prompt,
+                    messages=[
+                        {"role": "system", "content": self.system_role},
+                        {"role": "user", "content": self.prompt},
+                    ],
                     max_tokens=self.max_tokens,
                     n = self.response_num,
                     stop=self.stop_word,

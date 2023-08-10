@@ -37,7 +37,7 @@ app.add_middleware(
     allow_headers=["*"]       
 )
 
-# request models
+# response models
 class DiaryModel(BaseModel):
     diary: str
 
@@ -45,7 +45,7 @@ class WhoIsMeModel(BaseModel):
     msg: str
     uid: str
 
-# response
+# request model
 class MessageModel(BaseModel):
     message: str
 
@@ -69,6 +69,6 @@ async def contact_chatgpt():
     return JSONResponse(content=answer_dict)
 
 @app.post("/write_diary", response_model=DiaryModel)
-async def write_diary(input_seq=Depends(FacilitiesModel)):
-    diary_seq = writer.write_memories(input_seq)
+async def write_diary(desaki: FacilitiesModel):
+    diary_seq = writer.write_memories(desaki.facilities)
     return DiaryModel(diary=f"{diary_seq}")

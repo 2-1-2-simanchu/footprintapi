@@ -15,7 +15,7 @@ class WriterGPT:
 
         # rule for prompt
         self.system_role = "Settings {You are a WRITER who writes a nice diary.}"
-        self.diary_title_flag = "- タイトルは必要ありません\n"
+        self.diary_title_need = "- タイトルは必要ありません\n"
         self.prompt_limit_word_num="- 150文字以内で書いてください\n"
         self.content_only_flag = "- 本文のみを書くこと\n"
 
@@ -52,7 +52,7 @@ class WriterGPT:
         以下の条件に基づいて、お出かけの日記を書いてください\n
 
         # 執筆ルール\n
-        {self.diary_title_flag}
+        {self.diary_title_need}
         {self.prompt_limit_word_num}
         {self.content_only_flag}
 
